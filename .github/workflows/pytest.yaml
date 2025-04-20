@@ -1,0 +1,68 @@
+name: Pytest
+
+permissions:
+  id-token: write 
+  contents: write
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - dummy
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10']
+      max-parallel: 1
+    env: 
+      PROJECT: ${{ secrets.PROJECT }}
+      DESTINATION_TABLE: ${{ secrets.DESTINATION_TABLE }}
+      DATASET: ${{ secrets.DATASET }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Fetch GCP Key
+        uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
+        with:
+          create_credentials_file: true
+          workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.SERVICE_ACCOUNT_PYTEST_EMAIL }}'
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f .devcontainer/dev-requirements.txt ]; then pip install -r .devcontainer/dev-requirements.txt; fi
+      
+      - name: Test with pytest
+        run: |
+          python -m pytest -vv
+
+      - name: Build converage file
+        run: |
+          python -m pytest --junitxml=pytest.xml --cov-report "xml:coverage.xml" --cov=src tests/
+
+      - name: Post comment
+        uses: Mishakav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2 # v1.1.53
+        with:
+          pytest-xml-coverage-path: coverage.xml
+          junitxml-path: ./pytest.xml
+          coverage-path-prefix: src/
+
+      - name: Check Pytest coverage threshold >=95%
+        run: |
+          python -m pytest --cov=src --cov-fail-under=95

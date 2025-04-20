@@ -1,0 +1,8 @@
+[run]
+omit = 
+    tests/*
+    src/entrypoints/*
+
+[report]
+exclude_lines =
+    raise NotImplementedError

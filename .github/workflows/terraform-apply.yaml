@@ -1,0 +1,49 @@
+name: terraform-apply
+
+permissions:
+  id-token: write 
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - dummy
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  terraform_apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: 1.6.6
+      
+      - name: Fetch GCP Key
+        uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
+        with:
+          create_credentials_file: true
+          workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.SERVICE_ACCOUNT_EMAIL }}'
+
+      - name: Set permissions for the credentials file
+        run: chmod 644 $GOOGLE_APPLICATION_CREDENTIALS
+      
+      - name: Terraform apply
+        run: |
+          echo "Initializing Terraform..."
+          terraform init
+
+          echo "Validating Terraform..."
+          terraform validate
+
+          echo "Running Terraform plan..."
+          terraform apply -input=false -auto-approve

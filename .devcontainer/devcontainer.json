@@ -1,0 +1,29 @@
+{
+    "name": "template-python-devcontainer",
+    "build": {
+        "context": "..",
+        "dockerfile": "./Dockerfile",
+        "target": "devcontainer"
+    },
+    "remoteEnv": {
+        "PYTHONPATH": "/workspaces/template-python-devcontainer/src/entrypoints:${containerEnv:PYTHONPATH}",
+        "PATH": "/usr/app/google-cloud-sdk/bin:/workspaces/template-python-devcontainer/cli/bin:${containerEnv:PATH}",
+        "ISDEVCONTAINER": "true"
+    },
+    "postCreateCommand": "/usr/app/post_create_commands.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.black-formatter",
+                "ms-azuretools.vscode-docker",
+                "gruntfuggly.todo-tree",
+                "redhat.vscode-yaml",
+                "meezilla.json",
+                "mechatroner.rainbow-csv",
+                "hashicorp.terraform",
+                "github.vscode-github-actions"
+            ]
+        }
+    }
+}

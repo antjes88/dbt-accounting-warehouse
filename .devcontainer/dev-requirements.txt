@@ -1,0 +1,5 @@
+pytest==8.3.4
+pytest-cov==4.1.0
+python-dotenv==0.14.0
+black==25.1.0
+click==8.1.3

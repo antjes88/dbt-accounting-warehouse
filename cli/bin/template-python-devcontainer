@@ -1,0 +1,20 @@
+#!/bin/bash
+
+EXPECTED_VAR="ISDEVCONTAINER"
+
+if [ -n "${!EXPECTED_VAR}" ]; then
+    REPO_ROOT="/usr/app"
+else
+    SOURCE_DIR=$( cd "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    REPO_ROOT="${SOURCE_DIR}/../.."
+fi
+ACTIVATE_SCRIPT="${REPO_ROOT}/venv/bin/activate"
+
+if [ ! -f "${ACTIVATE_SCRIPT}" ]; then
+    echo "Virtual environment not found. Did you run python_setup.sh?"
+    exit 1
+fi
+
+source "${ACTIVATE_SCRIPT}"
+
+python -m cli "$@"
