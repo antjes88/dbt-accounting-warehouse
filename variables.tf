@@ -8,3 +8,8 @@ variable "region" {
   default     = "europe-west2"
   description = "Location for the resources"
 }
+
+variable "image_tag" {
+  type        = string
+  description = "Docker image tag"
+}

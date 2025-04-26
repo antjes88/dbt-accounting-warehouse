@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: "Raw data from the source system"
+    tables:
+      - name: account_types
+        identifier: account_types
+        description: "raw account_types table from Accounting App"
+      - name: accounts
+        identifier: accounts
+        description: "raw accounts table from Accounting App"
+      - name: entry_types
+        identifier: entry_types
+        description: "raw entry_types table from Accounting App"
+      - name: ledger_entries
+        identifier: ledger_entries
+        description: "raw ledger_entries table from Accounting App"
+      - name: transactions
+        identifier: transactions
+        description: "raw transactions table from Accounting App"
+      - name: asset_valuations_v2
+        identifier: asset_valuations
+        description: "raw asset_valuations_v2 table from Asset Valuation Ingestion solution"
+      - name: exchange_rates
+        identifier: exchange_rates
+        description: "raw exchange_rates table from Exchange Rates Ingestion solution"
+
+  - name: reference
+    schema: reference
+    description: "Reference data from the source system"
+    tables:
+      - name: asset_products
+        identifier: asset_products
+        description: "Reference tables that contains data related to asset accounts"

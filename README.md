@@ -136,28 +136,9 @@ To reuse the GitHub Action, follow these steps:
     - `WORKLOAD_IDENTITY_PROVIDER` & `SERVICE_ACCOUNT_EMAIL` must be provided as Github Actions Secrets.
 
 
-# Reuse template
-
-You need to modify the following files to adapt the template to your specific project:
-
-1. **`.devcontainer/devcontainer.json`**:  
-    - Update the `name` field from `template-python-devcontainer` to your repository name or preferred identifier.  
-    - Adjust the `PATH` and `PYTHONPATH` in the `remoteEnv` section to reflect the new workspace name.
-
-2. **`cli/bin/template-python-devcontainer`**:  
-    - Modify the CLI activation file name to better represent the purpose of your solution.
-
-3. **`.devcontainer/post_create_commands.sh`**:  
-    - Update lines 4 to 6 to reflect the new CLI command name and workspace name.
-
-4. **GitHub Workflows**:  
-    - In all workflow files (e.g., `.github/workflows/pytest.yaml`, `.github/workflows/terraform-validate.yaml`, `.github/workflows/terraform-apply.yaml`), modify the `on` clause to allow execution on the `main` branch.
-
-5. **`main.tf`**:  
-    - Update the Terraform backend configuration to use the correct Google Cloud Storage (GCS) bucket name and path to locate tfstate files.
-
-6. **Source Code**:  
-    - Adjust the source code as necessary to align with your project's requirements. Refer to the provided small examples for guidance.
-    - Update requirements.txt as required.
-
-By following these steps, you can customize the template to suit your project's needs.
+# TODO: rewrite
+how to execute from local:
+1. You have to do it form outside of the devcontainer
+2. build the image: `docker build -t LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG .`
+3. Push the image: `docker push LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG`
+4. Add as many tags as you like with the command above chanigng the tag. This will not push all image, just a new image tag.

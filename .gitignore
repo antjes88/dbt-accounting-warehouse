@@ -164,8 +164,10 @@ kindergarden.py
 .devcontainer/git_config.sh
 ./temp
 ./tmp
+.user.yml
 
 # Terraform
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+dbt_packages/*

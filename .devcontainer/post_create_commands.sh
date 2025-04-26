@@ -1,9 +1,12 @@
 #!/bin/bash
 # shellcheck disable=SC1091,SC2059
 
-sed -i 's/\r$//' /workspaces/python/cli/bin/template-python-devcontainer
-chmod +x /workspaces/template-python-devcontainer/cli/bin/template-python-devcontainer
-git config --global --add safe.directory /workspaces/template-python-devcontainer
+rm -rf ./dbt_packages
+cp -r /usr/app/dbt_packages ./dbt_packages
+# source /usr/app/venv/bin/activate
+# dbt deps
+
+git config --global --add safe.directory /workspaces/dbt-accounting-warehouse
 gcloud auth application-default login
 
 FILE="./.devcontainer/git_config.sh"

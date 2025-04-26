@@ -1,15 +1,18 @@
 {
-    "name": "template-python-devcontainer",
+    "name": "dbt-accounting-warehouse",
     "build": {
         "context": "..",
-        "dockerfile": "./Dockerfile",
+        "dockerfile": "../Dockerfile",
         "target": "devcontainer"
     },
     "remoteEnv": {
-        "PYTHONPATH": "/workspaces/template-python-devcontainer/src/entrypoints:${containerEnv:PYTHONPATH}",
-        "PATH": "/usr/app/google-cloud-sdk/bin:/workspaces/template-python-devcontainer/cli/bin:${containerEnv:PATH}",
+        "PATH": "/usr/app/google-cloud-sdk/bin:${containerEnv:PATH}",
         "ISDEVCONTAINER": "true"
     },
+    "mounts": [
+        "source=${localWorkspaceFolder}/dbt_project.yml,target=/usr/app/dbt_project.yml,type=bind",
+        "source=${localWorkspaceFolder}/packages.yml,target=/usr/app/packages.yml,type=bind",
+    ],
     "postCreateCommand": "/usr/app/post_create_commands.sh",
     "customizations": {
         "vscode": {
@@ -22,7 +25,8 @@
                 "meezilla.json",
                 "mechatroner.rainbow-csv",
                 "hashicorp.terraform",
-                "github.vscode-github-actions"
+                "github.vscode-github-actions",
+                "innoverio.vscode-dbt-power-user"
             ]
         }
     }
