@@ -1,0 +1,30 @@
+models:
+  - name: imaginary_cash_accounts
+    description: "Monthly accumulationg snapshots of imaginary accounts."
+
+  - name: current_company_assets_value
+    description: "Values tags for valuation amount per company holding assets."
+
+  - name: monthly_percentage_portfolio_and_wealth
+    description: "Monthly shares by accounts for investment portfolio and total wealth."
+
+  - name: monthly_periodic_accumulating_stock_market
+    description: "Monthly consolidated operations of accounts from investment portfolio."
+
+  - name: monthly_periodic_asset_portfolio
+    description: "Monthly valuation of accounts from investment portfolio."
+
+  - name: monthly_periodic_expenses
+    description: "Monthly periodic expenses."
+
+  - name: monthly_periodic_revenues
+    description: "Monthly periodic revenues."
+
+  - name: monthly_periodic_revenues_and_expenses
+    description: "Monthly aggregated revenues and expenses in pounds and euros."
+
+  - name: monthly_values_invested_assets_portfolio
+    description: "Monthly values of total invested and valuation of investment portfolio accounts."
+
+  - name: transactions_imaginary_accounts
+    description: "Transactions from imaginary accounts."

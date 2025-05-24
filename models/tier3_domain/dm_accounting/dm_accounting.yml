@@ -1,0 +1,24 @@
+models:
+  - name: accounts
+    description: "Accounts dimension table."
+
+  - name: gl_monthly_accumulating_snapshot
+    description: "General Ledger monthly accumulating snapshot."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ledger_book_name
+            - date
+            - account_id
+
+  - name: gl_monthly_periodic_snapshot
+    description: "General Ledger monthly periodic snapshot."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ledger_book_name
+            - date
+            - account_id
+
+  - name: transactions
+    description: "General Ledger transactions."

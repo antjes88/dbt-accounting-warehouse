@@ -4,7 +4,7 @@ models:
     columns:
       - name: transaction_date
         description: "The date of the transaction."
-        tests:
+        data_tests:
           - not_null
 
       - name: transaction_description
@@ -12,27 +12,27 @@ models:
 
       - name: from_account_name
         description: "The name of the account from which the transaction originated."
-        tests:
+        data_tests:
           - not_null
 
       - name: to_account_name
         description: "The name of the account to which the transaction was directed."
-        tests:
+        data_tests:
           - not_null
 
       - name: from_account_type_name
         description: "The type of the account from which the transaction originated."
-        tests:
+        data_tests:
           - not_null
 
       - name: to_account_type_name
         description: "The type of the account to which the transaction was directed."
-        tests:
+        data_tests:
           - not_null
 
       - name: amount
         description: "The monetary amount of the transaction."
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.expression_is_true:
               expression: "> 0"

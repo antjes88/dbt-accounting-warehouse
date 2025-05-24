@@ -2,12 +2,11 @@
 # shellcheck disable=SC1091,SC2059
 
 rm -rf ./dbt_packages
-cp -r /usr/app/dbt_packages ./dbt_packages
-# source /usr/app/venv/bin/activate
-# dbt deps
+source /usr/app/venv/bin/activate
+dbt deps
 
 git config --global --add safe.directory /workspaces/dbt-accounting-warehouse
-gcloud auth application-default login
+gcloud auth login --enable-gdrive-access --update-adc
 
 FILE="./.devcontainer/git_config.sh"
 if [ -f "$FILE" ]; then

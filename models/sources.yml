@@ -20,8 +20,8 @@ sources:
       - name: transactions
         identifier: transactions
         description: "raw transactions table from Accounting App"
-      - name: asset_valuations_v2
-        identifier: asset_valuations
+      - name: asset_valuations
+        identifier: asset_valuations_v2
         description: "raw asset_valuations_v2 table from Asset Valuation Ingestion solution"
       - name: exchange_rates
         identifier: exchange_rates
@@ -33,4 +33,8 @@ sources:
     tables:
       - name: asset_products
         identifier: asset_products
-        description: "Reference tables that contains data related to asset accounts"
+        description: "Reference table that contains data related to assets"
+
+      - name: mm_presentation_ranges
+        identifier: mm_presentation_ranges
+        description: "Reference table that contains tags for value ranges for MM presentation."

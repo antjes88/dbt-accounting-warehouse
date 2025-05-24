@@ -6,9 +6,10 @@ permissions:
   pull-requests: write
 
 on:
-  push:
+  # TODO: this has to be changed to a tag push event
+  pull_request:
     branches:
-      - dummy
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

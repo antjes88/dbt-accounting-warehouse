@@ -48,3 +48,21 @@ resource "google_cloud_run_v2_job" "dbt_job" {
   }
 
 }
+
+resource "google_cloud_scheduler_job" "trigger_run_job" {
+  name        = "trigger-daily-dbt-run-job"
+  description = "Triggers the DBT run job on a schedule"
+  schedule    = "15 0 * * *"
+  time_zone   = "Europe/London"
+
+  http_target {
+    uri         = "https://${google_cloud_run_v2_job.dbt_job.location}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${var.project_id}/jobs/${google_cloud_run_v2_job.dbt_job.name}:run"
+    http_method = "POST"
+    oauth_token {
+      service_account_email = data.google_service_account.default.email
+    }
+    headers = {
+      "Content-Type" = "application/json"
+    }
+  }
+}

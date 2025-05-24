@@ -14,5 +14,8 @@ pip install -r requirements.txt
 dbt deps
 if [ "$ISDEVCONTAINER" == "true" ]; then
     pip install -r dev-requirements.txt    
+    pip install pipx
+    pipx ensurepath
+    pipx install sqlfmt==0.0.3
 fi
 printf "\n \e[32mPython packages installed.\e[0m\n"

@@ -6,12 +6,11 @@
         "target": "devcontainer"
     },
     "remoteEnv": {
-        "PATH": "/usr/app/google-cloud-sdk/bin:${containerEnv:PATH}",
+        "PATH": "/home/app/.local/bin/sqlfmt:/usr/app/google-cloud-sdk/bin:${containerEnv:PATH}",
         "ISDEVCONTAINER": "true"
     },
     "mounts": [
-        "source=${localWorkspaceFolder}/dbt_project.yml,target=/usr/app/dbt_project.yml,type=bind",
-        "source=${localWorkspaceFolder}/packages.yml,target=/usr/app/packages.yml,type=bind",
+        "source=${localWorkspaceFolder}/dbt_project.yml,target=/usr/app/dbt_project.yml,type=bind"
     ],
     "postCreateCommand": "/usr/app/post_create_commands.sh",
     "customizations": {
@@ -26,7 +25,8 @@
                 "mechatroner.rainbow-csv",
                 "hashicorp.terraform",
                 "github.vscode-github-actions",
-                "innoverio.vscode-dbt-power-user"
+                "innoverio.vscode-dbt-power-user",
+                "emeraldwalk.runonsave"
             ]
         }
     }

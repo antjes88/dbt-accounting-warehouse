@@ -1,0 +1,40 @@
+models:
+  - name: gbp_ecb_exchange_rates
+    description: "Exchange rate of Euro to British Pound Sterling (GBP) from the European Central Bank."
+    columns:
+      - name: creation_date
+        description: "The date when the exchange rate was extracted from the source."
+        data_tests:
+          - not_null
+
+      - name: exchange_rate
+        description: "The exchange rate of Euro to British Pound Sterling (GBP)."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+
+      - name: date
+        description: "The date of the exchange rate."
+        data_tests:
+          - not_null
+
+  - name: usd_ecb_exchange_rates
+    description: "Exchange rate of Euro to USD from the European Central Bank."
+    columns:
+      - name: creation_date
+        description: "The date when the exchange rate was extracted from the source."
+        data_tests:
+          - not_null
+
+      - name: exchange_rate
+        description: "The exchange rate of Euro to USD."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+
+      - name: date
+        description: "The date of the exchange rate."
+        data_tests:
+          - not_null

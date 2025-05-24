@@ -6,6 +6,7 @@ permissions:
   pull-requests: write
 
 on:
+  # TODO: this has to be changed to a tag push event
   pull_request:
     branches:
       - dummy

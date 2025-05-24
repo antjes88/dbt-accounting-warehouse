@@ -1,0 +1,353 @@
+models:
+  - name: asset_cashflows
+    description: "Cashflows (inflows and outflows) for each asset for each period."
+    columns:
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: first_day_of_month
+        description: "The first day of the month for the cashflow."
+        data_tests:
+          - not_null
+
+      - name: inflow
+        description: "The input amount of cash to the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "The output amount of cash to the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: asset_values
+    description: "Valuation amounts for each asset for each period."
+    columns:
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: first_day_of_month
+        description: "The first day of the month for the cashflow."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: asset_profits
+    description: "End profit (loss) on liquidation of an asset."
+    columns:
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+
+      - name: profit
+        description: "Profit (loss) of the asset on liquidation."
+        data_tests:
+          - not_null
+
+  - name: profit_consolidated_funds
+    description: "Profit (loss) consolidated on liquidation of investment funds at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: profit_accumulated
+        description: "Profit (loss) of all investment funds liquidated up to that period."
+        data_tests:
+          - not_null
+
+  - name: profit_consolidated_privatepension
+    description: "Profit (loss) consolidated on liquidation of private pension assets at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: profit_accumulated
+        description: "Profit (loss) of all private pension assets liquidated up to that period."
+        data_tests:
+          - not_null
+
+  - name: profit_consolidated_shares
+    description: "Profit (loss) consolidated on liquidation of company shares at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: profit_accumulated
+        description: "Profit (loss) of all company shares liquidated up to that period."
+        data_tests:
+          - not_null
+
+  - name: profit_consolidated_all
+    description: "Profit (loss) consolidated on all assets at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: profit_accumulated
+        description: "Profit (loss) of all assets liquidated up to that period."
+        data_tests:
+          - not_null
+
+  - name: irr_all_accounts
+    description: "Valuation, inflow and outflow for each period for each asset."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_total_funds
+    description: "Valuation, inflow and outflow for each period for all investment funds together."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_total_privatepension
+    description: "Valuation, inflow and outflow for each period for all private pension assets together."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_total_portfolio
+    description: "Valuation, inflow and outflow for each period for full portfolio."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_total_shares
+    description: "Valuation, inflow and outflow for each period for all shares together."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: cashflows
+    description: "Valuation, inflow and outflow for each period for all previous assets and assets agrupations."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month

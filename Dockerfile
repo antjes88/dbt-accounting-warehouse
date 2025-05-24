@@ -21,17 +21,18 @@ ENV ISDEVCONTAINER=true
 
 WORKDIR /usr/app
 COPY --chown=app:app ./.devcontainer/install_gcloud.sh .
-COPY --chown=app:app ./requirements.txt .
-COPY --chown=app:app ./dbt_project.yml .
-COPY --chown=app:app ./packages.yml .
-COPY --chown=app:app ./.devcontainer/dev-requirements.txt .
-COPY --chown=app:app ./.devcontainer/python_setup.sh .
 
 RUN sed -i 's/\r$//' ./install_gcloud.sh && \
     chmod +x ./install_gcloud.sh
+RUN ./install_gcloud.sh
+
+COPY --chown=app:app ./requirements.txt .
+COPY --chown=app:app ./dbt_project.yml .
+COPY --chown=app:app ./.devcontainer/dev-requirements.txt .
+COPY --chown=app:app ./.devcontainer/python_setup.sh .
+
 RUN sed -i 's/\r$//' ./python_setup.sh && \
     chmod +x ./python_setup.sh
-RUN ./install_gcloud.sh
 RUN ./python_setup.sh
 
 COPY --chown=app:app ./.devcontainer/post_create_commands.sh .
