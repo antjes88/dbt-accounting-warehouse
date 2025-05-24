@@ -41,10 +41,14 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker europe-west2-docker.pkg.dev
 
-      - name: Build Docker Image
+      - name: Build Docker Image and Push to Artifact Registry
         run: |
           docker build -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} .
-          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
+          docker tag europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
+          
+          echo "Pushing Docker image to Artifact Registry..."
+          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} 
+          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
       
       - name: Terraform apply
         run: |
