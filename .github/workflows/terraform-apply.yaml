@@ -44,7 +44,7 @@ jobs:
       - name: Build Docker Image
         run: |
           docker build -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} .
-          docker tag europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
+          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
       
       - name: Terraform apply
         run: |
