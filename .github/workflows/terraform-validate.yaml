@@ -6,10 +6,9 @@ permissions:
   pull-requests: write
 
 on:
-  # TODO: this has to be changed to a tag push event
   pull_request:
     branches:
-      - dummy
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,6 +44,3 @@ jobs:
 
           echo "Validating Terraform..."
           terraform validate
-
-          echo "Running Terraform plan..."
-          terraform plan -input=false

@@ -1,4 +1,4 @@
-name: Pytest
+name: testing
 
 permissions:
   id-token: write 
@@ -6,10 +6,9 @@ permissions:
   pull-requests: write
 
 on:
-  # TODO: this has to be changed to a tag push event
   pull_request:
     branches:
-      - dummy
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -43,27 +42,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       
-      - name: Install dependencies
+      - name: dbt dry run
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f .devcontainer/dev-requirements.txt ]; then pip install -r .devcontainer/dev-requirements.txt; fi
-      
-      - name: Test with pytest
-        run: |
-          python -m pytest -vv
-
-      - name: Build converage file
-        run: |
-          python -m pytest --junitxml=pytest.xml --cov-report "xml:coverage.xml" --cov=src tests/
-
-      - name: Post comment
-        uses: Mishakav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2 # v1.1.53
-        with:
-          pytest-xml-coverage-path: coverage.xml
-          junitxml-path: ./pytest.xml
-          coverage-path-prefix: src/
-
-      - name: Check Pytest coverage threshold >=95%
-        run: |
-          python -m pytest --cov=src --cov-fail-under=95
+          docker build --target devcontainer -t dbt .
+          docker run --rm dbt dbt compile || exit 1
+          docker run --rm dbt dbt-dry-run || exit 1

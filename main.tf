@@ -66,3 +66,50 @@ resource "google_cloud_scheduler_job" "trigger_run_job" {
     }
   }
 }
+
+data "google_monitoring_notification_channel" "basic" {
+  display_name = "Personal email for alerting purposes"
+}
+
+resource "google_monitoring_alert_policy" "job_failed" {
+  project               = var.project_id
+  display_name          = "Cloud Run Job Failed: ${google_cloud_run_v2_job.dbt_job.name}"
+  combiner              = "OR"
+  severity              = "ERROR"
+  notification_channels = [data.google_monitoring_notification_channel.basic.id]
+
+  conditions {
+    display_name = "Failed Execution of ${google_cloud_run_v2_job.dbt_job.name}"
+
+    condition_threshold {
+      filter = format(
+        "metric.type=\"run.googleapis.com/job/completed_task_attempt_count\" resource.type=\"cloud_run_job\" resource.label.\"job_name\"=\"%s\" resource.label.\"location\"=\"%s\" metric.label.\"result\"=\"failed\"",
+        google_cloud_run_v2_job.dbt_job.name,
+        google_cloud_run_v2_job.dbt_job.location
+      )
+
+      comparison      = "COMPARISON_GT"
+      threshold_value = 0
+      duration        = "0s"
+
+      trigger {
+        count = 1
+      }
+
+      aggregations {
+        alignment_period     = "60s"
+        per_series_aligner   = "ALIGN_SUM"
+        cross_series_reducer = "REDUCE_NONE"
+      }
+    }
+  }
+
+  documentation {
+    content   = <<-EOT
+      The job `${google_cloud_run_v2_job.dbt_job.name}` has failed at least once in the last minute.
+
+      🔍 [View Logs in Cloud Logging](https://console.cloud.google.com/run/jobs/details/${var.region}/${google_cloud_run_v2_job.dbt_job.name}/logs)
+      EOT
+    mime_type = "text/markdown"
+  }
+}
