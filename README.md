@@ -111,8 +111,8 @@ Before the Terraform code can be executed, ensure the following:
       - `roles/storage.insightsCollectorService`
       - `roles/cloudfunctions.admin`
       - `roles/cloudscheduler.admin`
+      - `roles/monitoring.admin`
       - `roles/artifactregistry.writer`
-
     
 If the dbt models require access to data sources stored in Google Sheets, you must grant the Service Account executing the jobs **Viewer** permissions directly on the respective Google Sheets. This ensures the Service Account can read the data during execution.
 
