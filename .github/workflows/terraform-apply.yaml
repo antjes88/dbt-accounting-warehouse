@@ -47,11 +47,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build \ 
+          docker build \
             --target cloud_run_job \
-            -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} .
+            -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} \
+            .
           docker tag \
-            europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} \ 
+            europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} \
             europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:latest
       
       - name: Push to Artifact Registry
@@ -68,8 +69,8 @@ jobs:
           terraform validate
 
           echo "Running Terraform plan..."
-          terraform apply \ 
-            -input=false \ 
-            -auto-approve \ 
+          terraform apply \
+            -input=false \
+            -auto-approve \
             -var="image_tag=${{ github.run_number }}" \
             -var="image_name=${{ env.IMAGE_NAME }}"

@@ -16,14 +16,6 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.10']
-      max-parallel: 1
-    env: 
-      PROJECT: ${{ secrets.PROJECT }}
-      DESTINATION_TABLE: ${{ secrets.DESTINATION_TABLE }}
-      DATASET: ${{ secrets.DATASET }}
     
     steps:
       - name: Checkout code
@@ -37,7 +29,6 @@ jobs:
           tags: dbt:testing
           target: testing
 
-
       - name: Fetch GCP Key
         uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
         with:
@@ -45,6 +36,9 @@ jobs:
           workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.SERVICE_ACCOUNT_PYTEST_EMAIL }}'
       
+      - name: Set permissions for the credentials file
+        run: chmod 644 $GOOGLE_APPLICATION_CREDENTIALS  
+
       - name: Run pull request tests
         run: |
           set -e
@@ -53,4 +47,3 @@ jobs:
             -v "$GOOGLE_APPLICATION_CREDENTIALS:/var/secrets/google/service-account.json:ro" \
             -e GOOGLE_APPLICATION_CREDENTIALS="/var/secrets/google/service-account.json" \
             dbt:testing
-            
