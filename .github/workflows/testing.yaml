@@ -1,9 +1,8 @@
 name: testing
 
 permissions:
-  id-token: write 
-  contents: write
-  pull-requests: write
+  contents: 'read'
+  id-token: 'write'
 
 on:
   pull_request:
@@ -30,20 +29,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
+      - name: Build Docker image
+        uses: docker/build-push-action@0a97817b6ade9f46837855d676c4cca3a2471fc9 # v 4
+        with:
+          context: .
+          file: Dockerfile
+          tags: dbt:testing
+          target: testing
+
+
       - name: Fetch GCP Key
         uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2.1.7
         with:
           create_credentials_file: true
           workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.SERVICE_ACCOUNT_PYTEST_EMAIL }}'
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
-        with:
-          python-version: ${{ matrix.python-version }}
       
-      - name: dbt dry run
+      - name: Run pull request tests
         run: |
-          docker build --target devcontainer -t dbt .
-          docker run --rm dbt dbt compile || exit 1
-          docker run --rm dbt dbt-dry-run || exit 1
+          set -e
+          echo "Using credentials file at: $GOOGLE_APPLICATION_CREDENTIALS"
+          docker run --rm \
+            -v "$GOOGLE_APPLICATION_CREDENTIALS:/var/secrets/google/service-account.json:ro" \
+            -e GOOGLE_APPLICATION_CREDENTIALS="/var/secrets/google/service-account.json" \
+            dbt:testing
+            

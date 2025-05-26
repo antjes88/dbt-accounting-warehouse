@@ -9,6 +9,11 @@ variable "region" {
   description = "Location for the resources"
 }
 
+variable "image_name" {
+  type        = string
+  description = "Docker image name"
+}
+
 variable "image_tag" {
   type        = string
   description = "Docker image tag"

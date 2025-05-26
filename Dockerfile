@@ -63,4 +63,15 @@ COPY --chown=app:app . .
 
 ENV PATH="/usr/app/venv/bin:$PATH"
 
+FROM app AS cloud_run_job
+
 CMD [ "dbt", "run", "--target=prod" ]
+
+FROM app AS testing
+
+COPY --chown=app:app ./.devcontainer/testing.sh .
+RUN sed -i 's/\r$//' ./testing.sh && \
+    chmod +x ./testing.sh
+
+ENTRYPOINT [ "./testing.sh" ]
+

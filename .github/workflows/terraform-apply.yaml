@@ -6,13 +6,18 @@ permissions:
   pull-requests: write
 
 on:
-  push:
+  # TODO: this should be changed to push when the workflow is ready
+  pull_request:
     branches:
       - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+
+env:
+  IMAGE_NAME: dbt-accounting
+  
 
 jobs:
   terraform_apply:
@@ -40,14 +45,19 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker europe-west2-docker.pkg.dev
 
-      - name: Build Docker Image and Push to Artifact Registry
+      - name: Build Docker Image
         run: |
-          docker build -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} .
-          docker tag europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
-          
-          echo "Pushing Docker image to Artifact Registry..."
-          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:${{ github.run_number }} 
-          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/dbt-test:latest
+          docker build \ 
+            --target cloud_run_job \
+            -t europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} .
+          docker tag \
+            europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} \ 
+            europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:latest
+      
+      - name: Push to Artifact Registry
+        run: |
+          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:${{ github.run_number }} 
+          docker push europe-west2-docker.pkg.dev/poetic-dock-367718/cloud-run-jobs/${{ env.IMAGE_NAME }}:latest
       
       - name: Terraform apply
         run: |
@@ -58,4 +68,8 @@ jobs:
           terraform validate
 
           echo "Running Terraform plan..."
-          terraform apply -input=false -auto-approve -var="image_tag=${{github.run_number}}"
+          terraform apply \ 
+            -input=false \ 
+            -auto-approve \ 
+            -var="image_tag=${{ github.run_number }}" \
+            -var="image_name=${{ env.IMAGE_NAME }}"

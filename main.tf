@@ -23,6 +23,11 @@ data "google_service_account" "default" {
   project    = var.project_id
 }
 
+data "google_artifact_registry_repository" "my_repo" {
+  project       = var.project_id
+  location      = var.region
+  repository_id = "cloud-run-jobs"
+}
 
 resource "google_cloud_run_v2_job" "dbt_job" {
   name     = "daily-dbt-run-job"
@@ -31,7 +36,7 @@ resource "google_cloud_run_v2_job" "dbt_job" {
   template {
     template {
       containers {
-        image = "europe-west2-docker.pkg.dev/${var.project_id}/cloud-run-jobs/dbt-test:${var.image_tag}"
+        image = "${var.region}-docker.pkg.dev/${var.project_id}/${data.google_artifact_registry_repository.my_repo.repository_id}/${var.image_name}:${var.image_tag}"
 
         resources {
           limits = {
