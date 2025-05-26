@@ -8,11 +8,18 @@ permissions:
 on:
   push:
     branches:
-      - dummy
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+
+env:
+  IMAGE_NAME: dbt-accounting
+  GCP_PROJECT_ID: poetic-dock-367718
+  GCP_REGION: europe-west2
+  REPO_NAME: cloud-run-jobs
+  
 
 jobs:
   terraform_apply:
@@ -36,6 +43,24 @@ jobs:
 
       - name: Set permissions for the credentials file
         run: chmod 644 $GOOGLE_APPLICATION_CREDENTIALS
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            --target cloud_run_job \
+            -t ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.run_number }} \
+            .
+          docker tag \
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.run_number }} \
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+      
+      - name: Push to Artifact Registry
+        run: |
+          docker push ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.run_number }} 
+          docker push ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
       
       - name: Terraform apply
         run: |
@@ -46,4 +71,11 @@ jobs:
           terraform validate
 
           echo "Running Terraform plan..."
-          terraform apply -input=false -auto-approve
+          terraform apply \
+            -input=false \
+            -auto-approve \
+            -var="image_tag=${{ github.run_number }}" \
+            -var="image_name=${{ env.IMAGE_NAME }}" \
+            -var="project_id=${{ env.GCP_PROJECT_ID }}" \
+            -var="region=${{ env.GCP_REGION }}" \
+            -var="repo_name=${{ env.REPO_NAME }}"

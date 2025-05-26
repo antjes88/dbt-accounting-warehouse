@@ -1,0 +1,23 @@
+default:
+  target: local
+
+  outputs:
+    local:
+      type: bigquery
+      method: oauth
+      project: poetic-dock-367718
+      dataset: staging
+      threads: 1
+      timeout_seconds: 300
+      location: europe-west2
+      priority: interactive
+
+    prod:
+      type: bigquery
+      method: oauth
+      project: poetic-dock-367718
+      dataset: staging
+      threads: 1
+      timeout_seconds: 300
+      location: europe-west2
+      priority: interactive

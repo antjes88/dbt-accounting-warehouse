@@ -1,10 +1,12 @@
 #!/bin/bash
 # shellcheck disable=SC1091,SC2059
 
-sed -i 's/\r$//' /workspaces/python/cli/bin/template-python-devcontainer
-chmod +x /workspaces/template-python-devcontainer/cli/bin/template-python-devcontainer
-git config --global --add safe.directory /workspaces/template-python-devcontainer
-gcloud auth application-default login
+rm -rf ./dbt_packages
+source /usr/app/venv/bin/activate
+dbt deps
+
+git config --global --add safe.directory /workspaces/dbt-accounting-warehouse
+gcloud auth login --enable-gdrive-access --update-adc
 
 FILE="./.devcontainer/git_config.sh"
 if [ -f "$FILE" ]; then

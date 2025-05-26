@@ -1,0 +1,38 @@
+models:
+  - name: trans
+    description: "A model with all transactions from the accounting system"
+    columns:
+      - name: transaction_date
+        description: "The date of the transaction."
+        data_tests:
+          - not_null
+
+      - name: transaction_description
+        description: "A description of the transaction."
+
+      - name: from_account_name
+        description: "The name of the account from which the transaction originated."
+        data_tests:
+          - not_null
+
+      - name: to_account_name
+        description: "The name of the account to which the transaction was directed."
+        data_tests:
+          - not_null
+
+      - name: from_account_type_name
+        description: "The type of the account from which the transaction originated."
+        data_tests:
+          - not_null
+
+      - name: to_account_type_name
+        description: "The type of the account to which the transaction was directed."
+        data_tests:
+          - not_null
+
+      - name: amount
+        description: "The monetary amount of the transaction."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"

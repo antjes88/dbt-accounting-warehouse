@@ -1,0 +1,33 @@
+models:
+  - name: euro_exchange_rates
+    description: "Exchange rates for various currencies against Euro."
+    columns:
+      - name: date
+        description: "Date of the exchange rate."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: ratio_to_gbp
+        description: "Exchange rate against GBP."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+
+      - name: ratio_to_dollar
+        description: "Exchange rate against USD."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+
+      - name: source
+        description: "source of the exchange rate data."
+        data_tests:
+          - not_null
+
+      - name: extraction_date
+        description: "Date when the exchange rate was extracted from the source."
+        data_tests:
+          - not_null
