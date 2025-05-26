@@ -6,8 +6,7 @@ permissions:
   pull-requests: write
 
 on:
-  # TODO: this should be changed to push when the workflow is ready
-  pull_request:
+  push:
     branches:
       - main
 
