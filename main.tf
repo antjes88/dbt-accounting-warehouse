@@ -26,7 +26,7 @@ data "google_service_account" "default" {
 data "google_artifact_registry_repository" "my_repo" {
   project       = var.project_id
   location      = var.region
-  repository_id = "cloud-run-jobs"
+  repository_id = var.repo_name
 }
 
 resource "google_cloud_run_v2_job" "dbt_job" {
