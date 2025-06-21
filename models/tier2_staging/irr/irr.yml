@@ -116,6 +116,54 @@ models:
         data_tests:
           - not_null
 
+  - name: profit_consolidated_per_company
+    description: "Profit (loss) consolidated per company where funds are located at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+
+      - name: company_name
+        description: "Name of the company"
+        data_tests:
+          - not_null
+
+      - name: profit_accumulated
+        description: "Profit (loss) liquidated up to that period."
+        data_tests:
+          - not_null
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - company_name
+            - first_day_of_month
+
+  - name: profit_consolidated_per_underlying
+    description: "Profit (loss) consolidated per underlying company at beginning of every month."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month when entity was liquidated."
+        data_tests:
+          - not_null
+
+      - name: underlying_product_name
+        description: "Name of the underlying product"
+        data_tests:
+          - not_null
+
+      - name: profit_accumulated
+        description: "Profit (loss) liquidated up to that period."
+        data_tests:
+          - not_null
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - underlying_product_name
+            - first_day_of_month
+
   - name: profit_consolidated_all
     description: "Profit (loss) consolidated on all assets at beginning of every month."
     columns:
@@ -268,6 +316,80 @@ models:
 
       - name: outflow
         description: "Cash outflow amount of the asset for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_per_company
+    description: "Valuation, inflow and outflow for each period for all companies where funds are hold."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - entity_name
+            - first_day_of_month
+
+  - name: irr_per_underlying
+    description: "Valuation, inflow and outflow for each period for all underlying products."
+    columns:
+      - name: first_day_of_month
+        description: "First day of month."
+        data_tests:
+          - not_null
+
+      - name: entity_name
+        description: "The name of the asset."
+        data_tests:
+          - not_null
+
+      - name: value
+        description: "The valuation amount for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: inflow
+        description: "Cash inflow amount for the period."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+      - name: outflow
+        description: "Cash outflow amount for the period."
         data_tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
