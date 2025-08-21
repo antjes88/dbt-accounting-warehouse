@@ -47,6 +47,7 @@ SELECT
   FORMAT_DATE('%G%m', MAS.date) AS yyyymm,
   ACC.account_name,
   ACC.underlying_product_name,
+  ACC.underlying_market,
   ACC.account_type_name,
   ACC.is_physical,
   ACC.is_archived,
