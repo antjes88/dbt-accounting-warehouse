@@ -37,6 +37,18 @@ WITH
   WHERE
     account_family = "Bank Account"
   GROUP BY
+    MAS.date ),
+  total_debt AS (
+  SELECT
+    MAS.date,
+    SUM(MAS.end_balance_amount_pounds) AS total_amount
+  FROM {{ ref("gl_monthly_periodic_snapshot") }} AS MAS
+  INNER JOIN {{ ref("accounts") }} AS ACC
+  ON
+    MAS.account_id = ACC.account_id
+  WHERE
+    account_family = "Debt"
+  GROUP BY
     MAS.date )
 SELECT
   DATE_TRUNC(MAS.date, MONTH) AS month_start,
@@ -75,7 +87,8 @@ END
   AS percentage_portfolio,
   GWT.total_amount AS gross_wealth_pounds,
   TP.total_amount AS total_porfolio_pounds,
-  TC.total_amount AS total_bank_accounts_and_equivalents
+  TC.total_amount AS total_bank_accounts_and_equivalents,
+  TD.total_amount AS total_debt_pounds
 FROM {{ ref("gl_monthly_periodic_snapshot") }} AS MAS
 INNER JOIN {{ ref("accounts") }} AS ACC
 ON
@@ -92,6 +105,10 @@ INNER JOIN
   total_cash AS TC
 ON
   MAS.date = TC.date
+INNER JOIN 
+  total_debt AS TD
+ON 
+  MAS.date = TD.date
 WHERE
   MAS.ledger_book_name = 'Asset Accounting'
   AND (account_family <> "Debt"
